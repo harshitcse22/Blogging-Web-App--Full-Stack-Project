@@ -1,0 +1,11 @@
+.ql-editor {
+  color: #000000 !important;
+}
+
+.ql-editor p {
+  color: #000000 !important;
+}
+
+.ql-editor * {
+  color: inherit !important;
+}
