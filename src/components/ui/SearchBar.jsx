@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import api from '../../utils/api';
 import { debounce } from 'lodash';
 
@@ -10,25 +11,32 @@ const SearchBar = ({ onClose }) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const debouncedSearch = debounce(async (searchQuery) => {
-    if (!searchQuery.trim()) {
-      setResults([]);
-      return;
-    }
+  const debouncedSearch = useCallback(
+    debounce(async (searchQuery) => {
+      if (!searchQuery.trim()) {
+        setResults([]);
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      const response = await api.get(`/api/search?q=${encodeURIComponent(searchQuery)}&type=posts&limit=5`);
-      setResults(response.data.posts?.data || []);
-    } catch (error) {
-      console.error('Search error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, 300);
+      setIsLoading(true);
+      try {
+        const response = await api.get(`/api/search?q=${encodeURIComponent(searchQuery)}&type=posts&limit=5`);
+        setResults(response.data.posts?.data || []);
+      } catch (error) {
+        console.error('Search error:', error);
+        toast.error('Search failed');
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300),
+    []
+  );
 
   useEffect(() => {
     debouncedSearch(query);
+    return () => {
+      debouncedSearch.cancel();
+    };
   }, [query, debouncedSearch]);
 
   return (

@@ -50,8 +50,8 @@ const UserPosts = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(post =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.content.toLowerCase().includes(searchTerm.toLowerCase())
+        post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -244,7 +244,7 @@ const UserPosts = () => {
                       </Link>
 
                       <p className="text-gray-600 line-clamp-2 mb-4">
-                        {post.excerpt || post.content?.substring(0, 150) + '...'}
+                        {post.excerpt || (post.content ? post.content.substring(0, 150) + '...' : 'No content available')}
                       </p>
 
                       <div className="flex items-center justify-between">

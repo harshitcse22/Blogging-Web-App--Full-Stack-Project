@@ -124,9 +124,17 @@ const PostView = () => {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success('Link copied to clipboard!');
+  const handleShare = async () => {
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied to clipboard!');
+      } else {
+        toast.error('Clipboard not supported');
+      }
+    } catch (error) {
+      toast.error('Failed to copy link');
+    }
   };
 
   const formatDate = (date) => {
@@ -342,13 +350,9 @@ const PostView = () => {
 
                 {/* Content */}
                 <div className="prose prose-lg max-w-none mb-12">
-                  {post.content.includes('<') ? (
-                    <div dangerouslySetInnerHTML={{ __html: post.content }} />
-                  ) : (
-                    <div className="whitespace-pre-wrap text-lg leading-relaxed text-gray-800">
-                      {post.content}
-                    </div>
-                  )}
+                  <div className="whitespace-pre-wrap text-lg leading-relaxed text-gray-800">
+                    {post.content}
+                  </div>
                 </div>
 
                 {/* Tags */}

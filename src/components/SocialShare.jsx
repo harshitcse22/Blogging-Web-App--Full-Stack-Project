@@ -52,16 +52,30 @@ const SocialShare = ({ post, className = '' }) => {
     }
   ]
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(postUrl)
-    toast.success('Link copied to clipboard!')
+  const handleCopyLink = async () => {
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(postUrl)
+        toast.success('Link copied to clipboard!')
+      } else {
+        toast.error('Clipboard not supported')
+      }
+    } catch (error) {
+      toast.error('Failed to copy link')
+    }
     setIsOpen(false)
   }
 
-  const handleShare = (url, platform) => {
+  const handleShare = async (url, platform) => {
     if (platform === 'Instagram') {
       toast.info('Instagram sharing requires manual posting. Link copied to clipboard!')
-      navigator.clipboard.writeText(postUrl)
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(postUrl)
+        }
+      } catch (error) {
+        toast.error('Failed to copy link')
+      }
     } else {
       window.open(url, '_blank', 'width=600,height=400')
     }

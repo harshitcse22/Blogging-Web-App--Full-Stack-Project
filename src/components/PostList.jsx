@@ -12,12 +12,21 @@ import Button from './ui/Button';
 
 const PostList = ({ posts, onDelete }) => {
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    if (!date) return 'Unknown date';
+    try {
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return 'Invalid date';
+    }
   };
+
+  if (!posts || !Array.isArray(posts)) {
+    return <div className="text-center py-8">No posts available</div>;
+  }
 
   return (
     <div className="divide-y divide-gray-200">
